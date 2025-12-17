@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Spatie\Permission\Traits\HasRoles;
-
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -47,5 +46,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Filament panel access control.
+     * Only users with "Admin" role can access the admin panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // لو عندك أكتر من Panel وتعايز تقفل بس Panel admin:
+        if ($panel->getId() !== 'admin') {
+            return false;
+        }
+
+        return $this->hasRole('Admin');
+
+        // بديل بالصلاحية بدل الدور:
+        // return $this->can('access_admin_panel');
     }
 }
