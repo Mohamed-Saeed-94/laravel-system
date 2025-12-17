@@ -26,70 +26,70 @@ class CityResource extends Resource
 
     protected static ?string $label = 'مدينة';
 
-    // public static function form(Form $form): Form
-    // {
-    //     return $form
-    //         ->schema([
-    //         Forms\Components\TextInput::make('name_ar')
-    //             ->label('الاسم بالعربية')
-    //             ->required()
-    //             ->maxLength(255)
-    //             ->unique(ignoreRecord: true),
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('name_ar')
+                    ->label('الاسم بالعربية')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
 
-    //         Forms\Components\TextInput::make('name_en')
-    //             ->label('الاسم بالإنجليزية')
-    //             ->maxLength(255)
-    //             ->unique(ignoreRecord: true)
-    //             ->nullable(),
+                Forms\Components\TextInput::make('name_en')
+                    ->label('الاسم بالإنجليزية')
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->nullable(),
 
-    //         Forms\Components\Toggle::make('is_active')
-    //             ->label('نشط')
-    //             ->default(true),
-    //     ]);
-    // }
+                Forms\Components\Toggle::make('is_active')
+                    ->label('نشط')
+                    ->default(true),
+            ]);
+    }
 
-    // public static function table(Table $table): Table
-    // {
-    //     return $table
-    //         ->columns([
-    //             Tables\Columns\TextColumn::make('id')
-    //                 ->label('المعرف')
-    //                 ->sortable(),
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('المعرف')
+                    ->sortable(),
 
-    //             Tables\Columns\TextColumn::make('name_ar')
-    //                 ->label('الاسم بالعربية')
-    //                 ->searchable()
-    //                 ->sortable(),
+                Tables\Columns\TextColumn::make('name_ar')
+                    ->label('الاسم بالعربية')
+                    ->searchable()
+                    ->sortable(),
 
-    //             Tables\Columns\TextColumn::make('name_en')
-    //                 ->label('الاسم بالإنجليزية')
-    //                 ->searchable()
-    //                 ->sortable(),
+                Tables\Columns\TextColumn::make('name_en')
+                    ->label('الاسم بالإنجليزية')
+                    ->searchable()
+                    ->sortable(),
 
-    //             Tables\Columns\IconColumn::make('is_active')
-    //                 ->label('نشط')
-    //                 ->boolean()
-    //                 ->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('نشط')
+                    ->boolean()
+                    ->sortable(),
 
-    //             Tables\Columns\TextColumn::make('created_at')
-    //                 ->label('تاريخ الإنشاء')
-    //                 ->dateTime()
-    //                 ->sortable(),
-    //         ])
-    //         ->filters([
-    //             Tables\Filters\TernaryFilter::make('is_active')
-    //                 ->label('الحالة')
-    //                 ->boolean(),
-    //         ])
-    //         ->actions([
-    //             Tables\Actions\EditAction::make(),
-    //         ])
-    //         ->bulkActions([
-    //             Tables\Actions\BulkActionGroup::make([
-    //                 Tables\Actions\DeleteBulkAction::make(),
-    //             ]),
-    //         ]);
-    // }
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الإنشاء')
+                    ->dateTime()
+                    ->sortable(),
+            ])
+            ->filters([
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('الحالة')
+                    ->boolean(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
 
     public static function getPages(): array
     {
