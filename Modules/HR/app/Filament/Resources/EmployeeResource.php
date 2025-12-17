@@ -2,10 +2,19 @@
 
 namespace Modules\HR\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Modules\Core\Models\Branch;
 use Modules\Core\Models\Department;
@@ -29,48 +38,48 @@ class EmployeeResource extends Resource
 
     protected static ?string $label = 'موظف';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\TextInput::make('first_name')
+        return $schema->components([
+            TextInput::make('first_name')
                 ->label('الاسم الأول')
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make('last_name')
+            TextInput::make('last_name')
                 ->label('اسم العائلة')
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make('email')
+            TextInput::make('email')
                 ->label('البريد الإلكتروني')
                 ->email()
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make('phone')
+            TextInput::make('phone')
                 ->label('رقم الجوال')
                 ->tel()
                 ->maxLength(50),
-            Forms\Components\DatePicker::make('hire_date')
+            DatePicker::make('hire_date')
                 ->label('تاريخ التعيين')
                 ->required(),
-            Forms\Components\Select::make('branch_id')
+            Select::make('branch_id')
                 ->label('الفرع')
                 ->relationship('branch', 'name_ar')
                 ->searchable()
                 ->preload()
                 ->required(),
-            Forms\Components\Select::make('department_id')
+            Select::make('department_id')
                 ->label('الإدارة')
                 ->relationship('department', 'name_ar')
                 ->searchable()
                 ->preload()
                 ->required(),
-            Forms\Components\Select::make('job_title_id')
+            Select::make('job_title_id')
                 ->label('المسمى الوظيفي')
                 ->relationship('jobTitle', 'name_ar')
                 ->searchable()
                 ->preload()
                 ->required(),
-            Forms\Components\Toggle::make('is_active')
+            Toggle::make('is_active')
                 ->label('نشط')
                 ->default(true),
         ]);
@@ -80,59 +89,58 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('المعرف')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('first_name')
+                TextColumn::make('first_name')
                     ->label('الاسم الأول')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
+                TextColumn::make('last_name')
                     ->label('اسم العائلة')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->label('البريد الإلكتروني')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('branch.name_ar')
+                TextColumn::make('branch.name_ar')
                     ->label('الفرع')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('department.name_ar')
+                TextColumn::make('department.name_ar')
                     ->label('الإدارة')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('jobTitle.name_ar')
+                TextColumn::make('jobTitle.name_ar')
                     ->label('المسمى الوظيفي')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_active')
+                IconColumn::make('is_active')
                     ->label('نشط')
                     ->boolean()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('hire_date')
+                TextColumn::make('hire_date')
                     ->label('تاريخ التعيين')
                     ->date()
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('branch_id')
+                SelectFilter::make('branch_id')
                     ->label('الفرع')
                     ->relationship('branch', 'name_ar'),
-                Tables\Filters\SelectFilter::make('department_id')
+                SelectFilter::make('department_id')
                     ->label('الإدارة')
                     ->relationship('department', 'name_ar'),
-                Tables\Filters\SelectFilter::make('job_title_id')
+                SelectFilter::make('job_title_id')
                     ->label('المسمى الوظيفي')
                     ->relationship('jobTitle', 'name_ar'),
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->boolean(),
+                TernaryFilter::make('is_active')
+                    ->label('الحالة'),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
