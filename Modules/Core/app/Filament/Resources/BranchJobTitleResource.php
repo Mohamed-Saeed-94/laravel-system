@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources;
+namespace Modules\Core\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,16 +10,22 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Modules\Core\App\Filament\Resources\BranchJobTitleResource\Pages;
-use Modules\Core\App\Models\BranchJobTitle;
+use Modules\Core\Filament\Resources\BranchJobTitleResource\Pages;
+use Modules\Core\Models\BranchJobTitle;
 
 class BranchJobTitleResource extends Resource
 {
     protected static ?string $model = BranchJobTitle::class;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'الربط الوظيفي';
+    protected static ?string $navigationLabel = 'ربط الفروع بالمسميات';
 
-    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+    protected static string|\UnitEnum|null $navigationGroup = 'الهيكل التنظيمي';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
+
+    protected static ?int $navigationSort = 4;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $pluralLabel = 'ربط الفروع بالمسميات الوظيفية';
 

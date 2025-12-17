@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources\BranchDepartmentResource\Pages;
+namespace Modules\Core\Filament\Resources\BranchDepartmentResource\Pages;
 
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\App\Filament\Resources\BranchDepartmentResource;
+use Modules\Core\Filament\Resources\BranchDepartmentResource;
 
 class ListBranchDepartments extends ListRecords
 {

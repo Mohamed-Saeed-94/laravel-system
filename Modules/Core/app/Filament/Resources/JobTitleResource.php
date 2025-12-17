@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources;
+namespace Modules\Core\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,16 +10,20 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Modules\Core\App\Filament\Resources\JobTitleResource\Pages;
-use Modules\Core\App\Models\JobTitle;
+use Modules\Core\Filament\Resources\JobTitleResource\Pages;
+use Modules\Core\Models\JobTitle;
 
 class JobTitleResource extends Resource
 {
     protected static ?string $model = JobTitle::class;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'الإعدادات الأساسية';
+    protected static ?string $navigationLabel = 'المسميات الوظيفية';
 
-    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+    protected static string|\UnitEnum|null $navigationGroup = 'الهيكل التنظيمي';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $pluralLabel = 'المسميات الوظيفية';
 

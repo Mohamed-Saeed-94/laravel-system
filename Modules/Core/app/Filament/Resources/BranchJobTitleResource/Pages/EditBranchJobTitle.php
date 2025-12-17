@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources\BranchJobTitleResource\Pages;
+namespace Modules\Core\Filament\Resources\BranchJobTitleResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Core\App\Filament\Resources\BranchJobTitleResource;
+use Modules\Core\Filament\Resources\BranchJobTitleResource;
 
 class EditBranchJobTitle extends EditRecord
 {

@@ -1,22 +1,26 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources;
+namespace Modules\Core\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\Core\App\Filament\Resources\DepartmentResource\Pages;
-use Modules\Core\App\Models\Department;
+use Modules\Core\Filament\Resources\DepartmentResource\Pages;
+use Modules\Core\Models\Department;
 
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'الإعدادات الأساسية';
+    protected static ?string $navigationLabel = 'الإدارات';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\UnitEnum|null $navigationGroup = 'الهيكل التنظيمي';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $pluralLabel = 'الإدارات';
 

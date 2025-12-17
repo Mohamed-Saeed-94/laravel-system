@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources;
+namespace Modules\Core\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,16 +10,20 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Modules\Core\App\Filament\Resources\BranchResource\Pages;
-use Modules\Core\App\Models\Branch;
+use Modules\Core\Filament\Resources\BranchResource\Pages;
+use Modules\Core\Models\Branch;
 
 class BranchResource extends Resource
 {
     protected static ?string $model = Branch::class;
 
+    protected static ?string $navigationLabel = 'الفروع';
+
     protected static string|\UnitEnum|null $navigationGroup = 'الإعدادات الأساسية';
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $pluralLabel = 'الفروع';
 

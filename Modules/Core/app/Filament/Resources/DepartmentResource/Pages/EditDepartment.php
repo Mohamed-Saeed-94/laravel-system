@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources\DepartmentResource\Pages;
+namespace Modules\Core\Filament\Resources\DepartmentResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Core\App\Filament\Resources\DepartmentResource;
+use Modules\Core\Filament\Resources\DepartmentResource;
 
 class EditDepartment extends EditRecord
 {
