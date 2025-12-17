@@ -2,11 +2,17 @@
 
 namespace Modules\Core\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Tables;
-use Filament\Tables\Table;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Table;
 use Modules\Core\Filament\Resources\CityResource\Pages;
 use Modules\Core\Models\City;
 
@@ -26,67 +32,65 @@ class CityResource extends Resource
 
     protected static ?string $label = 'مدينة';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name_ar')
-                    ->label('الاسم بالعربية')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+        return $schema->components([
+            TextInput::make('name_ar')
+                ->label('الاسم بالعربية')
+                ->required()
+                ->maxLength(255)
+                ->unique(ignoreRecord: true),
 
-                Forms\Components\TextInput::make('name_en')
-                    ->label('الاسم بالإنجليزية')
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true)
-                    ->nullable(),
+            TextInput::make('name_en')
+                ->label('الاسم بالإنجليزية')
+                ->maxLength(255)
+                ->unique(ignoreRecord: true)
+                ->nullable(),
 
-                Forms\Components\Toggle::make('is_active')
-                    ->label('نشط')
-                    ->default(true),
-            ]);
+            Toggle::make('is_active')
+                ->label('نشط')
+                ->default(true),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('المعرف')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('name_ar')
+                TextColumn::make('name_ar')
                     ->label('الاسم بالعربية')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('name_en')
+                TextColumn::make('name_en')
                     ->label('الاسم بالإنجليزية')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('is_active')
+                IconColumn::make('is_active')
                     ->label('نشط')
                     ->boolean()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('تاريخ الإنشاء')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('الحالة')
-                    ->boolean(),
+                TernaryFilter::make('is_active')
+                    ->label('الحالة'),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
