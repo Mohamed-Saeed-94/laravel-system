@@ -1,0 +1,30 @@
+<?php
+
+namespace Modules\Core\App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class BranchDepartment extends Model
+{
+    use HasFactory;
+
+    protected $table = 'branch_departments';
+
+    protected $fillable = [
+        'branch_id',
+        'department_id',
+        'is_active',
+    ];
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+}
