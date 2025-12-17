@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources;
+namespace Modules\Core\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Modules\Core\App\Models\City;
-use Modules\Core\App\Filament\Resources\CityResource\Pages;
+use Modules\Core\Filament\Resources\CityResource\Pages;
+use Modules\Core\Models\City;
 
 class CityResource extends Resource
 {

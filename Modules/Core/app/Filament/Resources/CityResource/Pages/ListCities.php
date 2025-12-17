@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Core\App\Filament\Resources\CityResource\Pages;
+namespace Modules\Core\Filament\Resources\CityResource\Pages;
 
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\App\Filament\Resources\CityResource;
+use Modules\Core\Filament\Resources\CityResource;
 
 class ListCities extends ListRecords
 {
