@@ -3,11 +3,15 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
-
     "require": {
         "php": "^8.2",
+        "backpack/crud": "^7.0",
+        "backpack/theme-tabler": "^2.0",
         "coolsam/modules": "^5.0",
         "filament/filament": "^4.3",
         "laravel/framework": "^12.0",
@@ -16,8 +20,8 @@
         "spatie/laravel-permission": "^6.24",
         "wikimedia/composer-merge-plugin": "^2.0"
     },
-
     "require-dev": {
+        "backpack/generators": "^4.1",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
@@ -26,7 +30,6 @@
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^11.5.3"
     },
-
     "autoload": {
         "psr-4": {
             "App\\": "app/",
@@ -34,13 +37,11 @@
             "Database\\Seeders\\": "database/seeders/"
         }
     },
-
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
         }
     },
-
     "scripts": {
         "setup": [
             "composer install",
@@ -64,7 +65,8 @@
             "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan basset:cache"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -76,9 +78,11 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "post-install-cmd": [
+            "@php artisan basset:cache"
         ]
     },
-
     "extra": {
         "laravel": {
             "dont-discover": []
@@ -92,7 +96,6 @@
             "merge-dev": true
         }
     },
-
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
@@ -103,7 +106,6 @@
             "wikimedia/composer-merge-plugin": true
         }
     },
-
     "minimum-stability": "stable",
     "prefer-stable": true
 }
