@@ -16,6 +16,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Modules\Core\Filament\Resources\BranchJobTitleResource\Pages;
 use Modules\Core\Models\BranchJobTitle;
@@ -50,32 +51,32 @@ class BranchJobTitleResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth('web')->user()?->can('branch_job_titles.view_any') ?? false;
+        return Gate::allows('branch_job_titles.view_any');
     }
 
     public static function canView(Model $record): bool
     {
-        return auth('web')->user()?->can('branch_job_titles.view') ?? false;
+        return Gate::allows('branch_job_titles.view');
     }
 
     public static function canCreate(): bool
     {
-        return auth('web')->user()?->can('branch_job_titles.create') ?? false;
+        return Gate::allows('branch_job_titles.create');
     }
 
     public static function canEdit(Model $record): bool
     {
-        return auth('web')->user()?->can('branch_job_titles.update') ?? false;
+        return Gate::allows('branch_job_titles.update');
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth('web')->user()?->can('branch_job_titles.delete') ?? false;
+        return Gate::allows('branch_job_titles.delete');
     }
 
     public static function canDeleteAny(): bool
     {
-        return auth('web')->user()?->can('branch_job_titles.delete_any') ?? false;
+        return Gate::allows('branch_job_titles.delete_any');
     }
 
     public static function form(Schema $schema): Schema
@@ -85,11 +86,13 @@ class BranchJobTitleResource extends Resource
                 ->label(__('core::fields.branch'))
                 ->relationship('branch', 'name_ar')
                 ->searchable()
+                ->preload()
                 ->required(),
             Select::make('job_title_id')
                 ->label(__('core::fields.job_title'))
                 ->relationship('jobTitle', 'name_ar')
                 ->searchable()
+                ->preload()
                 ->required()
                 ->rule(fn ($get, ?Model $record) => Rule::unique('branch_job_titles')
                     ->where('branch_id', $get('branch_id'))
@@ -140,7 +143,8 @@ class BranchJobTitleResource extends Resource
                     ->visible(fn (Model $record): bool => static::canEdit($record)),
             ])
             ->toolbarActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->visible(fn (): bool => static::canCreate()),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ])->visible(fn (): bool => static::canDeleteAny()),

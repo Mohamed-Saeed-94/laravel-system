@@ -12,10 +12,10 @@ class BranchDepartment extends Model
 
     protected $table = 'branch_departments';
 
-    protected $fillable = [
-        'branch_id',
-        'department_id',
-        'is_active',
+    protected $guarded = [];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function branch(): BelongsTo

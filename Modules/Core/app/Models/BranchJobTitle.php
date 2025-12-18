@@ -12,10 +12,10 @@ class BranchJobTitle extends Model
 
     protected $table = 'branch_job_titles';
 
-    protected $fillable = [
-        'branch_id',
-        'job_title_id',
-        'is_active',
+    protected $guarded = [];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function branch(): BelongsTo

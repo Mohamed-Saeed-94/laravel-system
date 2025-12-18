@@ -16,7 +16,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Modules\Core\Filament\Resources\BranchDepartmentResource\Pages;
@@ -87,11 +86,13 @@ class BranchDepartmentResource extends Resource
                 ->label(__('core::fields.branch'))
                 ->relationship('branch', 'name_ar')
                 ->searchable()
+                ->preload()
                 ->required(),
             Select::make('department_id')
                 ->label(__('core::fields.department'))
                 ->relationship('department', 'name_ar')
                 ->searchable()
+                ->preload()
                 ->required()
                 ->rule(fn ($get, ?Model $record) => Rule::unique('branch_departments')
                     ->where('branch_id', $get('branch_id'))
@@ -142,7 +143,8 @@ class BranchDepartmentResource extends Resource
                     ->visible(fn (Model $record): bool => static::canEdit($record)),
             ])
             ->toolbarActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->visible(fn (): bool => static::canCreate()),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ])->visible(fn (): bool => static::canDeleteAny()),
