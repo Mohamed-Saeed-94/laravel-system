@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\Branch\StoreBranchRequest;
-use Modules\Core\Http\Requests\Branch\UpdateBranchRequest;
+use Modules\Core\Http\Requests\Admin\Branch\StoreRequest;
+use Modules\Core\Http\Requests\Admin\Branch\UpdateRequest;
 use Modules\Core\Models\Branch;
 use Modules\Core\Models\City;
 
@@ -24,19 +24,19 @@ class BranchCrudController extends CrudController
 
         $user = backpack_auth()->user();
 
-        if (! $user?->can('branches.view_any')) {
+        if (! $user?->can('view branches')) {
             CRUD::denyAccess(['list', 'show']);
         }
 
-        if (! $user?->can('branches.create')) {
+        if (! $user?->can('create branches')) {
             CRUD::denyAccess(['create']);
         }
 
-        if (! $user?->can('branches.update')) {
+        if (! $user?->can('update branches')) {
             CRUD::denyAccess(['update']);
         }
 
-        if (! $user?->can('branches.delete')) {
+        if (! $user?->can('delete branches')) {
             CRUD::denyAccess(['delete']);
         }
     }
@@ -91,7 +91,7 @@ class BranchCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreBranchRequest::class);
+        CRUD::setValidation(StoreRequest::class);
 
         CRUD::addFields([
             [
@@ -129,7 +129,7 @@ class BranchCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateBranchRequest::class);
+        CRUD::setValidation(UpdateRequest::class);
         $this->setupCreateOperation();
     }
 }

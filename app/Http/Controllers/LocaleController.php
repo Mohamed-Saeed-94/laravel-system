@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -26,8 +25,6 @@ class LocaleController extends Controller
         $request->session()->put('locale', $locale);
         app()->setLocale($locale);
 
-        $panelUrl = Filament::getCurrentPanel()?->getUrl();
-
-        return redirect()->intended($request->headers->get('referer') ?? $panelUrl ?? '/');
+        return redirect()->intended($request->headers->get('referer') ?? '/');
     }
 }

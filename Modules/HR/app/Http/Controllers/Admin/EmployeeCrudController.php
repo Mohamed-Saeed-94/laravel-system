@@ -7,8 +7,8 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Modules\Core\Models\Branch;
 use Modules\Core\Models\Department;
 use Modules\Core\Models\JobTitle;
-use Modules\HR\Http\Requests\Employee\StoreEmployeeRequest;
-use Modules\HR\Http\Requests\Employee\UpdateEmployeeRequest;
+use Modules\HR\Http\Requests\Admin\Employee\StoreRequest;
+use Modules\HR\Http\Requests\Admin\Employee\UpdateRequest;
 use Modules\HR\Models\Employee;
 
 class EmployeeCrudController extends CrudController
@@ -26,19 +26,19 @@ class EmployeeCrudController extends CrudController
 
         $user = backpack_auth()->user();
 
-        if (! $user?->can('employees.view_any')) {
+        if (! $user?->can('view employees')) {
             CRUD::denyAccess(['list', 'show']);
         }
 
-        if (! $user?->can('employees.create')) {
+        if (! $user?->can('create employees')) {
             CRUD::denyAccess(['create']);
         }
 
-        if (! $user?->can('employees.update')) {
+        if (! $user?->can('update employees')) {
             CRUD::denyAccess(['update']);
         }
 
-        if (! $user?->can('employees.delete')) {
+        if (! $user?->can('delete employees')) {
             CRUD::denyAccess(['delete']);
         }
     }
@@ -127,12 +127,11 @@ class EmployeeCrudController extends CrudController
             $this->crud->addClause('where', 'status', $value);
         });
 
-        // TODO: add Backpack alternatives for Filament relation managers (phones, identities, licenses, bank accounts, files).
     }
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreEmployeeRequest::class);
+        CRUD::setValidation(StoreRequest::class);
 
         CRUD::addFields([
             [
@@ -250,7 +249,7 @@ class EmployeeCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateEmployeeRequest::class);
+        CRUD::setValidation(UpdateRequest::class);
         $this->setupCreateOperation();
     }
 }

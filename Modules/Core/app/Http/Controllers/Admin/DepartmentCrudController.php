@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\Department\StoreDepartmentRequest;
-use Modules\Core\Http\Requests\Department\UpdateDepartmentRequest;
+use Modules\Core\Http\Requests\Admin\Department\StoreRequest;
+use Modules\Core\Http\Requests\Admin\Department\UpdateRequest;
 use Modules\Core\Models\Department;
 
 class DepartmentCrudController extends CrudController
@@ -23,19 +23,19 @@ class DepartmentCrudController extends CrudController
 
         $user = backpack_auth()->user();
 
-        if (! $user?->can('departments.view_any')) {
+        if (! $user?->can('view departments')) {
             CRUD::denyAccess(['list', 'show']);
         }
 
-        if (! $user?->can('departments.create')) {
+        if (! $user?->can('create departments')) {
             CRUD::denyAccess(['create']);
         }
 
-        if (! $user?->can('departments.update')) {
+        if (! $user?->can('update departments')) {
             CRUD::denyAccess(['update']);
         }
 
-        if (! $user?->can('departments.delete')) {
+        if (! $user?->can('delete departments')) {
             CRUD::denyAccess(['delete']);
         }
     }
@@ -84,7 +84,7 @@ class DepartmentCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreDepartmentRequest::class);
+        CRUD::setValidation(StoreRequest::class);
 
         CRUD::addFields([
             [
@@ -108,7 +108,7 @@ class DepartmentCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateDepartmentRequest::class);
+        CRUD::setValidation(UpdateRequest::class);
         $this->setupCreateOperation();
     }
 }

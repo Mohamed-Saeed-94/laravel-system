@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\City\StoreCityRequest;
-use Modules\Core\Http\Requests\City\UpdateCityRequest;
+use Modules\Core\Http\Requests\Admin\City\StoreRequest;
+use Modules\Core\Http\Requests\Admin\City\UpdateRequest;
 use Modules\Core\Models\City;
 
 class CityCrudController extends CrudController
@@ -23,19 +23,19 @@ class CityCrudController extends CrudController
 
         $user = backpack_auth()->user();
 
-        if (! $user?->can('cities.view_any')) {
+        if (! $user?->can('view cities')) {
             CRUD::denyAccess(['list', 'show']);
         }
 
-        if (! $user?->can('cities.create')) {
+        if (! $user?->can('create cities')) {
             CRUD::denyAccess(['create']);
         }
 
-        if (! $user?->can('cities.update')) {
+        if (! $user?->can('update cities')) {
             CRUD::denyAccess(['update']);
         }
 
-        if (! $user?->can('cities.delete')) {
+        if (! $user?->can('delete cities')) {
             CRUD::denyAccess(['delete']);
         }
     }
@@ -84,7 +84,7 @@ class CityCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreCityRequest::class);
+        CRUD::setValidation(StoreRequest::class);
 
         CRUD::addFields([
             [
@@ -108,7 +108,7 @@ class CityCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateCityRequest::class);
+        CRUD::setValidation(UpdateRequest::class);
         $this->setupCreateOperation();
     }
 }

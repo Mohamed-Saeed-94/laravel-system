@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\JobTitle\StoreJobTitleRequest;
-use Modules\Core\Http\Requests\JobTitle\UpdateJobTitleRequest;
+use Modules\Core\Http\Requests\Admin\JobTitle\StoreRequest;
+use Modules\Core\Http\Requests\Admin\JobTitle\UpdateRequest;
 use Modules\Core\Models\Department;
 use Modules\Core\Models\JobTitle;
 
@@ -24,19 +24,19 @@ class JobTitleCrudController extends CrudController
 
         $user = backpack_auth()->user();
 
-        if (! $user?->can('job_titles.view_any')) {
+        if (! $user?->can('view job_titles')) {
             CRUD::denyAccess(['list', 'show']);
         }
 
-        if (! $user?->can('job_titles.create')) {
+        if (! $user?->can('create job_titles')) {
             CRUD::denyAccess(['create']);
         }
 
-        if (! $user?->can('job_titles.update')) {
+        if (! $user?->can('update job_titles')) {
             CRUD::denyAccess(['update']);
         }
 
-        if (! $user?->can('job_titles.delete')) {
+        if (! $user?->can('delete job_titles')) {
             CRUD::denyAccess(['delete']);
         }
     }
@@ -91,7 +91,7 @@ class JobTitleCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreJobTitleRequest::class);
+        CRUD::setValidation(StoreRequest::class);
 
         CRUD::addFields([
             [
@@ -123,7 +123,7 @@ class JobTitleCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateJobTitleRequest::class);
+        CRUD::setValidation(UpdateRequest::class);
         $this->setupCreateOperation();
     }
 }

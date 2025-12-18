@@ -1,6 +1,6 @@
-laravel-system (Laravel + Filament)
+laravel-system
 
-Admin panel / back-office built with Laravel and Filament.
+Admin panel / back-office built with Laravel and Backpack.
 
 Requirements
 
@@ -36,7 +36,7 @@ DB_PASSWORD=
 بعدها
 
 php artisan migrate
-php artisan make:filament-user
+php artisan db:seed --class=DatabaseSeeder
 php artisan serve
 
 Admin Panel
