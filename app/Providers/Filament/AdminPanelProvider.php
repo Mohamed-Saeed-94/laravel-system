@@ -44,6 +44,10 @@ class AdminPanelProvider extends PanelProvider
                 in: base_path('Modules/Core/app/Filament/Resources'),
                 for: 'Modules\\Core\\Filament\\Resources'
             )
+            ->discoverResources(
+                in: base_path('Modules/HR/app/Filament/Resources'),
+                for: 'Modules\\HR\\Filament\\Resources'
+            )
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
