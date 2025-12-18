@@ -60,4 +60,13 @@ return [
         'alt' => ':name شعار',
     ],
 
+    'tenant_menu' => [
+
+        'search_field' => [
+            'label' => 'بحث المستأجرين',
+            'placeholder' => 'بحث',
+        ],
+
+    ],
+
 ];
