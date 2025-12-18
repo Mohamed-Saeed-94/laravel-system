@@ -21,6 +21,8 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->loadTranslationsFrom(module_path('Core', 'lang'), 'core');
+
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();

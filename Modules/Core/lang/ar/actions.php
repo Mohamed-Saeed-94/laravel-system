@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'switch_language' => 'تغيير اللغة',
-    'switch_to_ar' => 'العربية',
-    'switch_to_en' => 'الإنجليزية',
+    'switch_language' => 'اللغة',
+    'switch_to_ar' => 'التحويل إلى العربية',
+    'switch_to_en' => 'التحويل إلى الإنجليزية',
 ];
