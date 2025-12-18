@@ -26,6 +26,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapBackpackRoutes();
     }
 
     /**
@@ -36,6 +37,13 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(): void
     {
         Route::middleware('web')->group(module_path($this->name, '/routes/web.php'));
+    }
+
+    protected function mapBackpackRoutes(): void
+    {
+        if (file_exists(module_path($this->name, '/routes/backpack/custom.php'))) {
+            require module_path($this->name, '/routes/backpack/custom.php');
+        }
     }
 
     /**
