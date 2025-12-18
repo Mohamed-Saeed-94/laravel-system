@@ -6,4 +6,7 @@ return [
     'name_en' => 'English Name',
     'is_active' => 'Active',
     'created_at' => 'Created At',
+    'branch' => 'Branch',
+    'department' => 'Department',
+    'job_title' => 'Job Title',
 ];

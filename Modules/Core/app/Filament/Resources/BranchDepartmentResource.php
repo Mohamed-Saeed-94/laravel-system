@@ -8,7 +8,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
@@ -17,6 +16,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Modules\Core\Filament\Resources\BranchDepartmentResource\Pages;
 use Modules\Core\Models\BranchDepartment;
@@ -25,23 +26,13 @@ class BranchDepartmentResource extends Resource
 {
     protected static ?string $model = BranchDepartment::class;
 
-    protected static ?string $navigationLabel = null;
-
-    protected static string|\UnitEnum|null $navigationGroup = null;
-
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-link';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
     protected static ?int $navigationSort = 3;
 
-    protected static bool $shouldRegisterNavigation = false;
-
-    protected static ?string $pluralLabel = null;
-
-    protected static ?string $label = null;
-
     public static function getNavigationLabel(): string
     {
-        return __('core::branch_departments.navigation_label');
+        return __('core::resources.branch_departments.plural');
     }
 
     public static function getNavigationGroup(): ?string
@@ -51,64 +42,58 @@ class BranchDepartmentResource extends Resource
 
     public static function getPluralLabel(): string
     {
-        return __('core::branch_departments.label');
+        return __('core::resources.branch_departments.plural');
     }
 
     public static function getLabel(): string
     {
-        return __('core::branch_departments.singular');
+        return __('core::resources.branch_departments.label');
     }
 
     public static function canViewAny(): bool
     {
-        return static::authUser()?->can('branch_departments.view_any') ?? false;
+        return Gate::allows('branch_departments.view_any');
     }
 
     public static function canView(Model $record): bool
     {
-        return static::authUser()?->can('branch_departments.view') ?? false;
+        return Gate::allows('branch_departments.view');
     }
 
     public static function canCreate(): bool
     {
-        return static::authUser()?->can('branch_departments.create') ?? false;
+        return Gate::allows('branch_departments.create');
     }
 
     public static function canEdit(Model $record): bool
     {
-        return static::authUser()?->can('branch_departments.update') ?? false;
+        return Gate::allows('branch_departments.update');
     }
 
     public static function canDelete(Model $record): bool
     {
-        return static::authUser()?->can('branch_departments.delete') ?? false;
+        return Gate::allows('branch_departments.delete');
     }
 
     public static function canDeleteAny(): bool
     {
-        return static::authUser()?->can('branch_departments.delete_any') ?? false;
-    }
-
-    /**
-     * Use Filament auth to respect the active panel guard.
-     */
-    protected static function authUser(): ?Model
-    {
-        return filament()->auth()->user();
+        return Gate::allows('branch_departments.delete_any');
     }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Select::make('branch_id')
-                ->label(__('core::branch_departments.fields.branch'))
+                ->label(__('core::fields.branch'))
                 ->relationship('branch', 'name_ar')
+                ->searchable()
                 ->required(),
             Select::make('department_id')
-                ->label(__('core::branch_departments.fields.department'))
+                ->label(__('core::fields.department'))
                 ->relationship('department', 'name_ar')
+                ->searchable()
                 ->required()
-                ->rule(fn ( $get, ?Model $record) => Rule::unique('branch_departments')
+                ->rule(fn ($get, ?Model $record) => Rule::unique('branch_departments')
                     ->where('branch_id', $get('branch_id'))
                     ->where('department_id', $get('department_id'))
                     ->ignore($record)),
@@ -126,11 +111,11 @@ class BranchDepartmentResource extends Resource
                     ->label(__('core::fields.id'))
                     ->sortable(),
                 TextColumn::make('branch.name_ar')
-                    ->label(__('core::branch_departments.fields.branch'))
+                    ->label(__('core::fields.branch'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('department.name_ar')
-                    ->label(__('core::branch_departments.fields.department'))
+                    ->label(__('core::fields.department'))
                     ->sortable()
                     ->searchable(),
                 IconColumn::make('is_active')
@@ -144,22 +129,20 @@ class BranchDepartmentResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('branch_id')
-                    ->label(__('core::branch_departments.filters.branch'))
+                    ->label(__('core::fields.branch'))
                     ->relationship('branch', 'name_ar'),
                 SelectFilter::make('department_id')
-                    ->label(__('core::branch_departments.filters.department'))
+                    ->label(__('core::fields.department'))
                     ->relationship('department', 'name_ar'),
                 TernaryFilter::make('is_active')
-                    ->label(__('core::filters.status')),
+                    ->label(__('core::fields.is_active')),
             ])
             ->recordActions([
                 EditAction::make()
                     ->visible(fn (Model $record): bool => static::canEdit($record)),
             ])
             ->toolbarActions([
-                CreateAction::make()
-                    ->visible(fn (): bool => static::canCreate()),
-
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ])->visible(fn (): bool => static::canDeleteAny()),

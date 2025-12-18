@@ -6,4 +6,7 @@ return [
     'name_en' => 'الاسم بالإنجليزية',
     'is_active' => 'نشط',
     'created_at' => 'تاريخ الإنشاء',
+    'branch' => 'الفرع',
+    'department' => 'القسم',
+    'job_title' => 'المسمى الوظيفي',
 ];
