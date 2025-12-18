@@ -14,7 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -63,8 +62,11 @@ class EmployeeResource extends Resource
                 ->maxLength(200),
             TextInput::make('email')
                 ->label('البريد الإلكتروني')
+                ->nullable()
                 ->email()
-                ->maxLength(255),
+                ->maxLength(255)
+                ->dehydrateStateUsing(fn ($state) => filled($state) ? $state : null)
+                ->unique(ignoreRecord: true),
             Select::make('gender')
                 ->label('الجنس')
                 ->options([
@@ -78,7 +80,7 @@ class EmployeeResource extends Resource
                 ->searchable()
                 ->preload()
                 ->required()
-                ->reactive()
+                ->live()
                 ->afterStateUpdated(function (Set $set) {
                     $set('department_id', null);
                     $set('job_title_id', null);
@@ -106,7 +108,7 @@ class EmployeeResource extends Resource
                 ->searchable()
                 ->preload()
                 ->required()
-                ->reactive()
+                ->live()
                 ->afterStateUpdated(fn (Set $set) => $set('job_title_id', null))
                 ->rules(function (Get $get) {
                     $branchId = (int) $get('branch_id');
@@ -143,7 +145,7 @@ class EmployeeResource extends Resource
                 ->searchable()
                 ->preload()
                 ->required()
-                ->reactive()
+                ->live()
                 ->rules(function (Get $get) {
                     $branchId = (int) $get('branch_id');
                     $departmentId = (int) $get('department_id');
@@ -211,18 +213,21 @@ class EmployeeResource extends Resource
                     ->label('المسمى الوظيفي')
                     ->sortable()
                     ->toggleable(),
-                BadgeColumn::make('status')
+                TextColumn::make('status')
                     ->label('الحالة')
-                    ->colors([
-                        'success' => 'active',
-                        'warning' => 'suspended',
-                        'danger' => 'terminated',
-                    ])
-                    ->icons([
-                        'heroicon-o-check-circle' => 'active',
-                        'heroicon-o-pause' => 'suspended',
-                        'heroicon-o-x-circle' => 'terminated',
-                    ]),
+                    ->badge()
+                    ->color(fn (string $state) => match ($state) {
+                        'active' => 'success',
+                        'suspended' => 'warning',
+                        'terminated' => 'danger',
+                        default => 'gray',
+                    })
+                    ->icon(fn (string $state) => match ($state) {
+                        'active' => 'heroicon-o-check-circle',
+                        'suspended' => 'heroicon-o-pause',
+                        'terminated' => 'heroicon-o-x-circle',
+                        default => null,
+                    }),
                 TextColumn::make('hire_date')
                     ->label('تاريخ التعيين')
                     ->date()

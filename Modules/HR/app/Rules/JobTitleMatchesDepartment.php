@@ -15,7 +15,6 @@ class JobTitleMatchesDepartment implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! $this->departmentId || ! $value) {
-            $fail($attribute, __('The selected job title must belong to the chosen department.'));
             return;
         }
 

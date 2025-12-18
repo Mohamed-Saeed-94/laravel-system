@@ -15,7 +15,6 @@ class DepartmentInBranch implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! $this->branchId || ! $value) {
-            $fail($attribute,__('The selected department is invalid for the chosen branch.'));
             return;
         }
 
