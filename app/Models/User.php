@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -50,19 +48,13 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Filament panel access control.
-     * Only users with "Admin" role can access the admin panel.
+     * Backpack access helper (اختياري).
+     * استخدمها في middleware أو في CrudControllers لو عايز تقفل /admin على roles معينة.
      */
-    public function canAccessPanel(Panel $panel): bool
+    public function canAccessBackpack(): bool
     {
-        // لو عندك أكتر من Panel وتعايز تقفل بس Panel admin:
-        if ($panel->getId() !== 'admin') {
-            return false;
-        }
-
         return $this->hasAnyRole(['admin', 'Admin']);
-
-        // بديل بالصلاحية بدل الدور:
+        // بديل بالصلاحية:
         // return $this->can('access_admin_panel');
     }
 }
