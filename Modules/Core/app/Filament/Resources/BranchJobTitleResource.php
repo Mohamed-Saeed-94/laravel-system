@@ -24,9 +24,9 @@ class BranchJobTitleResource extends Resource
 {
     protected static ?string $model = BranchJobTitle::class;
 
-    protected static ?string $navigationLabel = 'ربط الفروع بالمسميات';
+    protected static ?string $navigationLabel = null;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'الهيكل التنظيمي';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
@@ -34,9 +34,29 @@ class BranchJobTitleResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $pluralLabel = 'ربط الفروع بالمسميات الوظيفية';
+    protected static ?string $pluralLabel = null;
 
-    protected static ?string $label = 'ربط فرع بمسمى وظيفي';
+    protected static ?string $label = null;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('core::branch_job_titles.navigation_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('core::core.groups.org_structure');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('core::branch_job_titles.label');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('core::branch_job_titles.singular');
+    }
 
     public static function canViewAny(): bool
     {
@@ -84,19 +104,19 @@ class BranchJobTitleResource extends Resource
     {
         return $schema->components([
             Select::make('branch_id')
-                ->label('الفرع')
+                ->label(__('core::branch_job_titles.fields.branch'))
                 ->relationship('branch', 'name_ar')
                 ->required(),
             Select::make('job_title_id')
-                ->label('المسمى الوظيفي')
+                ->label(__('core::branch_job_titles.fields.job_title'))
                 ->relationship('jobTitle', 'name_ar')
                 ->required()
-                ->rule(fn ( $get, ?Model $record) => Rule::unique('branch_job_titles')
+                ->rule(fn (Get $get, ?Model $record) => Rule::unique('branch_job_titles')
                     ->where('branch_id', $get('branch_id'))
                     ->where('job_title_id', $get('job_title_id'))
                     ->ignore($record)),
             Toggle::make('is_active')
-                ->label('نشط')
+                ->label(__('core::core.fields.is_active'))
                 ->default(true),
         ]);
     }
@@ -106,34 +126,34 @@ class BranchJobTitleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('المعرف')
+                    ->label(__('core::core.fields.id'))
                     ->sortable(),
                 TextColumn::make('branch.name_ar')
-                    ->label('الفرع')
+                    ->label(__('core::branch_job_titles.fields.branch'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('jobTitle.name_ar')
-                    ->label('المسمى الوظيفي')
+                    ->label(__('core::branch_job_titles.fields.job_title'))
                     ->sortable()
                     ->searchable(),
                 IconColumn::make('is_active')
-                    ->label('نشط')
+                    ->label(__('core::core.fields.is_active'))
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('core::core.fields.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('branch_id')
-                    ->label('الفرع')
+                    ->label(__('core::branch_job_titles.filters.branch'))
                     ->relationship('branch', 'name_ar'),
                 SelectFilter::make('job_title_id')
-                    ->label('المسمى الوظيفي')
+                    ->label(__('core::branch_job_titles.filters.job_title'))
                     ->relationship('jobTitle', 'name_ar'),
                 TernaryFilter::make('is_active')
-                    ->label('الحالة'),
+                    ->label(__('core::core.filters.status')),
             ])
             ->recordActions([
                 EditAction::make(),

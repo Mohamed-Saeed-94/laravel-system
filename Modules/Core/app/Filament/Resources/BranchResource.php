@@ -24,13 +24,33 @@ class BranchResource extends Resource
 {
     protected static ?string $model = Branch::class;
 
-    protected static ?string $navigationLabel = 'الفروع';
-    protected static string|\UnitEnum|null $navigationGroup = 'الإعدادات الأساسية';
+    protected static ?string $navigationLabel = null;
+    protected static string|\UnitEnum|null $navigationGroup = null;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $pluralLabel = 'الفروع';
-    protected static ?string $label = 'فرع';
+    protected static ?string $pluralLabel = null;
+    protected static ?string $label = null;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('core::branches.navigation_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('core::core.groups.basic_settings');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('core::branches.label');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('core::branches.singular');
+    }
 
     /**
      * Use Filament auth to avoid IDE false-positives and to respect panel guard.
@@ -74,30 +94,30 @@ class BranchResource extends Resource
     {
         return $schema->components([
             Select::make('city_id')
-                ->label('المدينة')
+                ->label(__('core::branches.fields.city'))
                 ->relationship('city', 'name_ar')
                 ->required(),
 
             TextInput::make('name_ar')
-                ->label('الاسم بالعربية')
+                ->label(__('core::branches.fields.name_ar'))
                 ->required()
                 ->maxLength(255)
                 ->unique(ignoreRecord: true),
 
             TextInput::make('name_en')
-                ->label('الاسم بالإنجليزية')
+                ->label(__('core::branches.fields.name_en'))
                 ->maxLength(255)
                 ->unique(ignoreRecord: true)
                 ->nullable(),
 
             Textarea::make('address')
-                ->label('العنوان')
+                ->label(__('core::branches.fields.address'))
                 ->rows(3)
                 ->columnSpanFull()
                 ->nullable(),
 
             Toggle::make('is_active')
-                ->label('نشط')
+                ->label(__('core::core.fields.is_active'))
                 ->default(true),
         ]);
     }
@@ -107,37 +127,37 @@ class BranchResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('المعرف')
+                    ->label(__('core::core.fields.id'))
                     ->sortable(),
 
                 TextColumn::make('city.name_ar')
-                    ->label('المدينة')
+                    ->label(__('core::branches.fields.city'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('name_ar')
-                    ->label('الاسم بالعربية')
+                    ->label(__('core::branches.fields.name_ar'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('name_en')
-                    ->label('الاسم بالإنجليزية')
+                    ->label(__('core::branches.fields.name_en'))
                     ->searchable()
                     ->sortable(),
 
                 IconColumn::make('is_active')
-                    ->label('نشط')
+                    ->label(__('core::core.fields.is_active'))
                     ->boolean()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('core::core.fields.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label('الحالة'),
+                    ->label(__('core::core.filters.status')),
             ])
             ->recordActions([
                 EditAction::make()

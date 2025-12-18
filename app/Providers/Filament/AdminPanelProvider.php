@@ -2,7 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\SetLocale;
 use Coolsam\Modules\ModulesPlugin;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -46,12 +48,26 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            ->userMenuItems([
+                'switch_to_ar' => Action::make('switch_to_ar')
+                    ->label(__('core::core.actions.switch_to_ar'))
+                    ->icon('heroicon-o-language')
+                    ->url(fn () => route('locale.switch', ['locale' => 'ar']))
+                    ->visible(fn (): bool => app()->getLocale() !== 'ar'),
+
+                'switch_to_en' => Action::make('switch_to_en')
+                    ->label(__('core::core.actions.switch_to_en'))
+                    ->icon('heroicon-o-language')
+                    ->url(fn () => route('locale.switch', ['locale' => 'en']))
+                    ->visible(fn (): bool => app()->getLocale() !== 'en'),
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
+                SetLocale::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,

@@ -24,9 +24,9 @@ class BranchDepartmentResource extends Resource
 {
     protected static ?string $model = BranchDepartment::class;
 
-    protected static ?string $navigationLabel = 'ربط الفروع بالإدارات';
+    protected static ?string $navigationLabel = null;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'الهيكل التنظيمي';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-link';
 
@@ -34,9 +34,29 @@ class BranchDepartmentResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $pluralLabel = 'ربط الفروع بالإدارات';
+    protected static ?string $pluralLabel = null;
 
-    protected static ?string $label = 'ربط فرع بإدارة';
+    protected static ?string $label = null;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('core::branch_departments.navigation_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('core::core.groups.org_structure');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('core::branch_departments.label');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('core::branch_departments.singular');
+    }
 
     public static function canViewAny(): bool
     {
@@ -84,19 +104,19 @@ class BranchDepartmentResource extends Resource
     {
         return $schema->components([
             Select::make('branch_id')
-                ->label('الفرع')
+                ->label(__('core::branch_departments.fields.branch'))
                 ->relationship('branch', 'name_ar')
                 ->required(),
             Select::make('department_id')
-                ->label('الإدارة')
+                ->label(__('core::branch_departments.fields.department'))
                 ->relationship('department', 'name_ar')
                 ->required()
-                ->rule(fn ( $get, ?Model $record) => Rule::unique('branch_departments')
+                ->rule(fn (Get $get, ?Model $record) => Rule::unique('branch_departments')
                     ->where('branch_id', $get('branch_id'))
                     ->where('department_id', $get('department_id'))
                     ->ignore($record)),
             Toggle::make('is_active')
-                ->label('نشط')
+                ->label(__('core::core.fields.is_active'))
                 ->default(true),
         ]);
     }
@@ -106,34 +126,34 @@ class BranchDepartmentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('المعرف')
+                    ->label(__('core::core.fields.id'))
                     ->sortable(),
                 TextColumn::make('branch.name_ar')
-                    ->label('الفرع')
+                    ->label(__('core::branch_departments.fields.branch'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('department.name_ar')
-                    ->label('الإدارة')
+                    ->label(__('core::branch_departments.fields.department'))
                     ->sortable()
                     ->searchable(),
                 IconColumn::make('is_active')
-                    ->label('نشط')
+                    ->label(__('core::core.fields.is_active'))
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('core::core.fields.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('branch_id')
-                    ->label('الفرع')
+                    ->label(__('core::branch_departments.filters.branch'))
                     ->relationship('branch', 'name_ar'),
                 SelectFilter::make('department_id')
-                    ->label('الإدارة')
+                    ->label(__('core::branch_departments.filters.department'))
                     ->relationship('department', 'name_ar'),
                 TernaryFilter::make('is_active')
-                    ->label('الحالة'),
+                    ->label(__('core::core.filters.status')),
             ])
             ->recordActions([
                 EditAction::make(),

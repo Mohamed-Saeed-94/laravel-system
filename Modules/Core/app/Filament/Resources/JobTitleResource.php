@@ -23,13 +23,33 @@ class JobTitleResource extends Resource
 {
     protected static ?string $model = JobTitle::class;
 
-    protected static ?string $navigationLabel = 'المسميات الوظيفية';
-    protected static string|\UnitEnum|null $navigationGroup = 'الهيكل التنظيمي';
+    protected static ?string $navigationLabel = null;
+    protected static string|\UnitEnum|null $navigationGroup = null;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $pluralLabel = 'المسميات الوظيفية';
-    protected static ?string $label = 'مسمى وظيفي';
+    protected static ?string $pluralLabel = null;
+    protected static ?string $label = null;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('core::job_titles.navigation_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('core::core.groups.org_structure');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('core::job_titles.label');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('core::job_titles.singular');
+    }
 
     /**
      * Use Filament auth to avoid IDE false-positives and to respect panel guard.
@@ -73,24 +93,24 @@ class JobTitleResource extends Resource
     {
         return $schema->components([
             Select::make('department_id')
-                ->label('الإدارة')
+                ->label(__('core::job_titles.fields.department'))
                 ->relationship('department', 'name_ar')
                 ->required(),
 
             TextInput::make('name_ar')
-                ->label('الاسم بالعربية')
+                ->label(__('core::job_titles.fields.name_ar'))
                 ->required()
                 ->maxLength(255)
                 ->unique(ignoreRecord: true),
 
             TextInput::make('name_en')
-                ->label('الاسم بالإنجليزية')
+                ->label(__('core::job_titles.fields.name_en'))
                 ->maxLength(255)
                 ->unique(ignoreRecord: true)
                 ->nullable(),
 
             Toggle::make('is_active')
-                ->label('نشط')
+                ->label(__('core::core.fields.is_active'))
                 ->default(true),
         ]);
     }
@@ -100,37 +120,37 @@ class JobTitleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('المعرف')
+                    ->label(__('core::core.fields.id'))
                     ->sortable(),
 
                 TextColumn::make('department.name_ar')
-                    ->label('الإدارة')
+                    ->label(__('core::job_titles.fields.department'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('name_ar')
-                    ->label('الاسم بالعربية')
+                    ->label(__('core::job_titles.fields.name_ar'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('name_en')
-                    ->label('الاسم بالإنجليزية')
+                    ->label(__('core::job_titles.fields.name_en'))
                     ->searchable()
                     ->sortable(),
 
                 IconColumn::make('is_active')
-                    ->label('نشط')
+                    ->label(__('core::core.fields.is_active'))
                     ->boolean()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(__('core::core.fields.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label('الحالة'),
+                    ->label(__('core::core.filters.status')),
             ])
             ->recordActions([
                 EditAction::make()
