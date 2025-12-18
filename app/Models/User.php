@@ -59,7 +59,7 @@ class User extends Authenticatable implements FilamentUser
             return false;
         }
 
-        return $this->hasRole('Admin');
+        return $this->hasAnyRole(['admin', 'Admin']);
 
         // بديل بالصلاحية بدل الدور:
         // return $this->can('access_admin_panel');

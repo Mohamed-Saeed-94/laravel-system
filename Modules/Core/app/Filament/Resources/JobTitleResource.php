@@ -37,6 +37,48 @@ class JobTitleResource extends Resource
 
     protected static ?string $label = 'مسمى وظيفي';
 
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('job_titles.view_any') ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('job_titles.view') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('job_titles.create') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('job_titles.update') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('job_titles.delete') ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('job_titles.delete_any') ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

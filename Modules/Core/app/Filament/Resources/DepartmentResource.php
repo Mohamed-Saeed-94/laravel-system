@@ -13,6 +13,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Filament\Resources\DepartmentResource\Pages;
 use Modules\Core\Models\Department;
 
@@ -31,6 +32,48 @@ class DepartmentResource extends Resource
     protected static ?string $pluralLabel = 'الإدارات';
 
     protected static ?string $label = 'إدارة';
+
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('departments.view_any') ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('departments.view') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('departments.create') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('departments.update') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('departments.delete') ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('departments.delete_any') ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

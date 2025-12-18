@@ -38,6 +38,48 @@ class BranchDepartmentResource extends Resource
 
     protected static ?string $label = 'ربط فرع بإدارة';
 
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branch_departments.view_any') ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branch_departments.view') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branch_departments.create') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branch_departments.update') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branch_departments.delete') ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branch_departments.delete_any') ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

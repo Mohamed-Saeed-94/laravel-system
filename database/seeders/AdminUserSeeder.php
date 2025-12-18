@@ -12,7 +12,8 @@ class AdminUserSeeder extends Seeder
     {
         // إنشاء Role Admin لو مش موجود
         $adminRole = Role::firstOrCreate([
-            'name' => 'Admin',
+            'name' => 'admin',
+            'guard_name' => 'web',
         ]);
 
         // إنشاء Admin User لو مش موجود

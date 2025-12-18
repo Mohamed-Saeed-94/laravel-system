@@ -37,6 +37,48 @@ class BranchResource extends Resource
 
     protected static ?string $label = 'فرع';
 
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branches.view_any') ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branches.view') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branches.create') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branches.update') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branches.delete') ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        $user = auth()->user();
+
+        return $user?->can('branches.delete_any') ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
