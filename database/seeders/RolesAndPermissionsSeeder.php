@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -15,42 +13,20 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $resourcePath = base_path('Modules/Core/app/Filament/Resources');
-        $permissions = [];
+        $resourceNames = [
+            'cities',
+            'branches',
+            'departments',
+            'job_titles',
+        ];
 
-        if (File::exists($resourcePath)) {
-            foreach (File::files($resourcePath) as $file) {
-                $className = pathinfo($file->getFilename(), PATHINFO_FILENAME);
-
-                if (! str_ends_with($className, 'Resource')) {
-                    continue;
-                }
-
-                $resourceClass = "Modules\\Core\\Filament\\Resources\\{$className}";
-
-                if (! class_exists($resourceClass)) {
-                    continue;
-                }
-
-                $resourceName = Str::of($className)
-                    ->beforeLast('Resource')
-                    ->snake()
-                    ->plural();
-
-                $permissions[] = "{$resourceName}.view_any";
-                $permissions[] = "{$resourceName}.view";
-                $permissions[] = "{$resourceName}.create";
-                $permissions[] = "{$resourceName}.update";
-                $permissions[] = "{$resourceName}.delete";
-                $permissions[] = "{$resourceName}.delete_any";
-            }
-        }
-
-        foreach (array_unique($permissions) as $permission) {
-            Permission::firstOrCreate([
-                'name' => $permission,
-                'guard_name' => 'web',
-            ]);
+        foreach ($resourceNames as $resource) {
+            Permission::firstOrCreate(['name' => "{$resource}.view_any", 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => "{$resource}.view", 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => "{$resource}.create", 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => "{$resource}.update", 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => "{$resource}.delete", 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => "{$resource}.delete_any", 'guard_name' => 'web']);
         }
 
         $adminRole = Role::firstOrCreate([

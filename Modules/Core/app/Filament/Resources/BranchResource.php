@@ -3,6 +3,7 @@
 namespace Modules\Core\Filament\Resources;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -13,11 +14,9 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rule;
 use Modules\Core\Filament\Resources\BranchResource\Pages;
 use Modules\Core\Models\Branch;
 
@@ -26,57 +25,49 @@ class BranchResource extends Resource
     protected static ?string $model = Branch::class;
 
     protected static ?string $navigationLabel = 'الفروع';
-
     protected static string|\UnitEnum|null $navigationGroup = 'الإعدادات الأساسية';
-
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
-
     protected static ?int $navigationSort = 2;
 
     protected static ?string $pluralLabel = 'الفروع';
-
     protected static ?string $label = 'فرع';
+
+    /**
+     * Use Filament auth to avoid IDE false-positives and to respect panel guard.
+     */
+    protected static function authUser(): ?Model
+    {
+        return filament()->auth()->user();
+    }
 
     public static function canViewAny(): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branches.view_any') ?? false;
+        return static::authUser()?->can('branches.view_any') ?? false;
     }
 
     public static function canView(Model $record): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branches.view') ?? false;
+        return static::authUser()?->can('branches.view') ?? false;
     }
 
     public static function canCreate(): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branches.create') ?? false;
+        return static::authUser()?->can('branches.create') ?? false;
     }
 
     public static function canEdit(Model $record): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branches.update') ?? false;
+        return static::authUser()?->can('branches.update') ?? false;
     }
 
     public static function canDelete(Model $record): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branches.delete') ?? false;
+        return static::authUser()?->can('branches.delete') ?? false;
     }
 
     public static function canDeleteAny(): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branches.delete_any') ?? false;
+        return static::authUser()?->can('branches.delete_any') ?? false;
     }
 
     public static function form(Schema $schema): Schema
@@ -86,22 +77,25 @@ class BranchResource extends Resource
                 ->label('المدينة')
                 ->relationship('city', 'name_ar')
                 ->required(),
+
             TextInput::make('name_ar')
                 ->label('الاسم بالعربية')
                 ->required()
                 ->maxLength(255)
-                ->rule(fn ($get, ?Model $record) => Rule::unique('branches', 'name_ar')
-                    ->where('city_id', $get('city_id'))
-                    ->ignore($record)),
+                ->unique(ignoreRecord: true),
+
             TextInput::make('name_en')
                 ->label('الاسم بالإنجليزية')
                 ->maxLength(255)
+                ->unique(ignoreRecord: true)
                 ->nullable(),
+
             Textarea::make('address')
                 ->label('العنوان')
                 ->rows(3)
                 ->columnSpanFull()
                 ->nullable(),
+
             Toggle::make('is_active')
                 ->label('نشط')
                 ->default(true),
@@ -115,41 +109,47 @@ class BranchResource extends Resource
                 TextColumn::make('id')
                     ->label('المعرف')
                     ->sortable(),
+
                 TextColumn::make('city.name_ar')
                     ->label('المدينة')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('name_ar')
                     ->label('الاسم بالعربية')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('name_en')
                     ->label('الاسم بالإنجليزية')
                     ->searchable()
                     ->sortable(),
+
                 IconColumn::make('is_active')
                     ->label('نشط')
                     ->boolean()
                     ->sortable(),
+
                 TextColumn::make('created_at')
                     ->label('تاريخ الإنشاء')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('city_id')
-                    ->label('المدينة')
-                    ->relationship('city', 'name_ar'),
                 TernaryFilter::make('is_active')
                     ->label('الحالة'),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (Model $record): bool => static::canEdit($record)),
             ])
             ->toolbarActions([
+                CreateAction::make()
+                    ->visible(fn (): bool => static::canCreate()),
+
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                ]),
+                ])->visible(fn (): bool => static::canDeleteAny()),
             ]);
     }
 
