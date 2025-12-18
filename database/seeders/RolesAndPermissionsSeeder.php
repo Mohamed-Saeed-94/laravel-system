@@ -18,6 +18,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'branches',
             'departments',
             'job_titles',
+            'employees',
         ];
 
         foreach ($resourceNames as $resource) {
