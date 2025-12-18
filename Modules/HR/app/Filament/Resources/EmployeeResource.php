@@ -2,25 +2,35 @@
 
 namespace Modules\HR\Filament\Resources;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Tables;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Modules\Core\Models\Branch;
 use Modules\Core\Models\Department;
 use Modules\Core\Models\JobTitle;
 use Modules\HR\Filament\Resources\EmployeeResource\Pages;
+use Modules\HR\Filament\Resources\EmployeeResource\RelationManagers\BankAccountsRelationManager;
+use Modules\HR\Filament\Resources\EmployeeResource\RelationManagers\FilesRelationManager;
+use Modules\HR\Filament\Resources\EmployeeResource\RelationManagers\IdentitiesRelationManager;
+use Modules\HR\Filament\Resources\EmployeeResource\RelationManagers\LicensesRelationManager;
+use Modules\HR\Filament\Resources\EmployeeResource\RelationManagers\PhonesRelationManager;
 use Modules\HR\Models\Employee;
+use Modules\HR\Rules\DepartmentInBranch;
+use Modules\HR\Rules\JobTitleInBranch;
+use Modules\HR\Rules\JobTitleMatchesDepartment;
 
 class EmployeeResource extends Resource
 {
@@ -38,85 +48,181 @@ class EmployeeResource extends Resource
 
     protected static ?string $label = 'موظف';
 
-    public static function form(Schema $schema): Schema
+    public static function form(Form $form): Form
     {
-        return $schema->components([
-            TextInput::make('first_name')
-                ->label('الاسم الأول')
+        return $form
+            ->schema([
+            TextInput::make('employee_code')
+                ->label('كود الموظف')
                 ->required()
-                ->maxLength(255),
-            TextInput::make('last_name')
-                ->label('اسم العائلة')
+                ->maxLength(30)
+                ->unique(ignoreRecord: true),
+            TextInput::make('full_name')
+                ->label('الاسم الكامل')
                 ->required()
-                ->maxLength(255),
+                ->maxLength(200),
             TextInput::make('email')
                 ->label('البريد الإلكتروني')
                 ->email()
-                ->required()
                 ->maxLength(255),
-            TextInput::make('phone')
-                ->label('رقم الجوال')
-                ->tel()
-                ->maxLength(50),
-            DatePicker::make('hire_date')
-                ->label('تاريخ التعيين')
-                ->required(),
+            Select::make('gender')
+                ->label('الجنس')
+                ->options([
+                    'male' => 'ذكر',
+                    'female' => 'أنثى',
+                ])
+                ->native(false),
             Select::make('branch_id')
                 ->label('الفرع')
-                ->relationship('branch', 'name_ar')
+                ->options(fn () => Branch::query()->where('is_active', true)->orderBy('name_ar')->pluck('name_ar', 'id'))
                 ->searchable()
                 ->preload()
-                ->required(),
+                ->required()
+                ->reactive()
+                ->afterStateUpdated(function (Set $set) {
+                    $set('department_id', null);
+                    $set('job_title_id', null);
+                }),
             Select::make('department_id')
                 ->label('الإدارة')
-                ->relationship('department', 'name_ar')
+                ->options(function (Get $get) {
+                    $branchId = $get('branch_id');
+
+                    if (! $branchId) {
+                        return [];
+                    }
+
+                    return Department::query()
+                        ->where('departments.is_active', true)
+                        ->whereIn('departments.id', function ($query) use ($branchId) {
+                            $query->select('department_id')
+                                ->from('branch_departments')
+                                ->where('branch_id', $branchId)
+                                ->where('is_active', true);
+                        })
+                        ->orderBy('name_ar')
+                        ->pluck('name_ar', 'id');
+                })
                 ->searchable()
                 ->preload()
-                ->required(),
+                ->required()
+                ->reactive()
+                ->afterStateUpdated(fn (Set $set) => $set('job_title_id', null))
+                ->rules(function (Get $get) {
+                    $branchId = (int) $get('branch_id');
+
+                    return [
+                        'required',
+                        'integer',
+                        'exists:departments,id',
+                        new DepartmentInBranch($branchId ?: null),
+                    ];
+                }),
             Select::make('job_title_id')
                 ->label('المسمى الوظيفي')
-                ->relationship('jobTitle', 'name_ar')
+                ->options(function (Get $get) {
+                    $branchId = $get('branch_id');
+                    $departmentId = $get('department_id');
+
+                    if (! $branchId) {
+                        return [];
+                    }
+
+                    return JobTitle::query()
+                        ->where('job_titles.is_active', true)
+                        ->when($departmentId, fn ($query) => $query->where('department_id', $departmentId))
+                        ->whereIn('job_titles.id', function ($query) use ($branchId) {
+                            $query->select('job_title_id')
+                                ->from('branch_job_titles')
+                                ->where('branch_id', $branchId)
+                                ->where('is_active', true);
+                        })
+                        ->orderBy('name_ar')
+                        ->pluck('name_ar', 'id');
+                })
                 ->searchable()
                 ->preload()
+                ->required()
+                ->reactive()
+                ->rules(function (Get $get) {
+                    $branchId = (int) $get('branch_id');
+                    $departmentId = (int) $get('department_id');
+
+                    $rules = [
+                        'required',
+                        'integer',
+                        'exists:job_titles,id',
+                    ];
+
+                    if ($branchId) {
+                        $rules[] = new JobTitleInBranch($branchId);
+                    }
+
+                    if ($departmentId) {
+                        $rules[] = new JobTitleMatchesDepartment($departmentId);
+                    }
+
+                    return $rules;
+                }),
+            DatePicker::make('hire_date')
+                ->label('تاريخ التعيين'),
+            DatePicker::make('termination_date')
+                ->label('تاريخ إنهاء الخدمة'),
+            Select::make('status')
+                ->label('الحالة')
+                ->options([
+                    'active' => 'نشط',
+                    'suspended' => 'موقوف',
+                    'terminated' => 'منتهي',
+                ])
+                ->default('active')
+                ->native(false)
                 ->required(),
-            Toggle::make('is_active')
-                ->label('نشط')
-                ->default(true),
-        ]);
+            Textarea::make('notes')
+                ->label('ملاحظات')
+                ->columnSpanFull(),
+        ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('المعرف')
+                TextColumn::make('employee_code')
+                    ->label('الكود')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('first_name')
-                    ->label('الاسم الأول')
-                    ->searchable(),
-                TextColumn::make('last_name')
-                    ->label('اسم العائلة')
-                    ->searchable(),
+                TextColumn::make('full_name')
+                    ->label('الاسم')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('email')
                     ->label('البريد الإلكتروني')
                     ->searchable(),
                 TextColumn::make('branch.name_ar')
                     ->label('الفرع')
                     ->sortable()
-                    ->searchable(),
+                    ->toggleable(),
                 TextColumn::make('department.name_ar')
                     ->label('الإدارة')
                     ->sortable()
-                    ->searchable(),
+                    ->toggleable(),
                 TextColumn::make('jobTitle.name_ar')
                     ->label('المسمى الوظيفي')
                     ->sortable()
-                    ->searchable(),
-                IconColumn::make('is_active')
-                    ->label('نشط')
-                    ->boolean()
-                    ->sortable(),
+                    ->toggleable(),
+                BadgeColumn::make('status')
+                    ->label('الحالة')
+                    ->colors([
+                        'success' => 'active',
+                        'warning' => 'suspended',
+                        'danger' => 'terminated',
+                    ])
+                    ->icons([
+                        'heroicon-o-check-circle' => 'active',
+                        'heroicon-o-pause' => 'suspended',
+                        'heroicon-o-x-circle' => 'terminated',
+                    ]),
                 TextColumn::make('hire_date')
                     ->label('تاريخ التعيين')
                     ->date()
@@ -125,29 +231,41 @@ class EmployeeResource extends Resource
             ->filters([
                 SelectFilter::make('branch_id')
                     ->label('الفرع')
-                    ->relationship('branch', 'name_ar'),
+                    ->options(Branch::query()->pluck('name_ar', 'id')),
                 SelectFilter::make('department_id')
                     ->label('الإدارة')
-                    ->relationship('department', 'name_ar'),
+                    ->options(Department::query()->pluck('name_ar', 'id')),
                 SelectFilter::make('job_title_id')
                     ->label('المسمى الوظيفي')
-                    ->relationship('jobTitle', 'name_ar'),
-                TernaryFilter::make('is_active')
-                    ->label('الحالة'),
+                    ->options(JobTitle::query()->pluck('name_ar', 'id')),
+                SelectFilter::make('status')
+                    ->label('الحالة')
+                    ->options([
+                        'active' => 'نشط',
+                        'suspended' => 'موقوف',
+                        'terminated' => 'منتهي',
+                    ]),
             ])
-            ->recordActions([
-                EditAction::make(),
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            PhonesRelationManager::class,
+            IdentitiesRelationManager::class,
+            LicensesRelationManager::class,
+            BankAccountsRelationManager::class,
+            FilesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
