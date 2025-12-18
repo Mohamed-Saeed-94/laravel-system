@@ -37,7 +37,7 @@ class CityResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('core::core.groups.basic_settings');
+        return __('core::groups.basic_settings');
     }
 
     public static function getPluralLabel(): string
@@ -104,7 +104,7 @@ class CityResource extends Resource
                 ->nullable(),
 
             Toggle::make('is_active')
-                ->label(__('core::core.fields.is_active'))
+                ->label(__('core::fields.is_active'))
                 ->default(true),
         ]);
     }
@@ -114,7 +114,7 @@ class CityResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label(__('core::core.fields.id'))
+                    ->label(__('core::fields.id'))
                     ->sortable(),
 
                 TextColumn::make('name_ar')
@@ -128,18 +128,18 @@ class CityResource extends Resource
                     ->sortable(),
 
                 IconColumn::make('is_active')
-                    ->label(__('core::core.fields.is_active'))
+                    ->label(__('core::fields.is_active'))
                     ->boolean()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label(__('core::core.fields.created_at'))
+                    ->label(__('core::fields.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label(__('core::core.filters.status')),
+                    ->label(__('core::filters.status')),
             ])
             ->recordActions([
                 EditAction::make()

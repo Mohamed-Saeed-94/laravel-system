@@ -50,13 +50,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 'switch_to_ar' => Action::make('switch_to_ar')
-                    ->label(__('core::core.actions.switch_to_ar'))
+                    ->label(__('core::actions.switch_to_ar'))
                     ->icon('heroicon-o-language')
                     ->url(fn () => route('locale.switch', ['locale' => 'ar']))
                     ->visible(fn (): bool => app()->getLocale() !== 'ar'),
 
                 'switch_to_en' => Action::make('switch_to_en')
-                    ->label(__('core::core.actions.switch_to_en'))
+                    ->label(__('core::actions.switch_to_en'))
                     ->icon('heroicon-o-language')
                     ->url(fn () => route('locale.switch', ['locale' => 'en']))
                     ->visible(fn (): bool => app()->getLocale() !== 'en'),

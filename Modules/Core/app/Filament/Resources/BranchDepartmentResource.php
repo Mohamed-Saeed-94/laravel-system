@@ -46,7 +46,7 @@ class BranchDepartmentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('core::core.groups.org_structure');
+        return __('core::groups.org_structure');
     }
 
     public static function getPluralLabel(): string
@@ -113,7 +113,7 @@ class BranchDepartmentResource extends Resource
                     ->where('department_id', $get('department_id'))
                     ->ignore($record)),
             Toggle::make('is_active')
-                ->label(__('core::core.fields.is_active'))
+                ->label(__('core::fields.is_active'))
                 ->default(true),
         ]);
     }
@@ -123,7 +123,7 @@ class BranchDepartmentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label(__('core::core.fields.id'))
+                    ->label(__('core::fields.id'))
                     ->sortable(),
                 TextColumn::make('branch.name_ar')
                     ->label(__('core::branch_departments.fields.branch'))
@@ -134,11 +134,11 @@ class BranchDepartmentResource extends Resource
                     ->sortable()
                     ->searchable(),
                 IconColumn::make('is_active')
-                    ->label(__('core::core.fields.is_active'))
+                    ->label(__('core::fields.is_active'))
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label(__('core::core.fields.created_at'))
+                    ->label(__('core::fields.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
@@ -150,7 +150,7 @@ class BranchDepartmentResource extends Resource
                     ->label(__('core::branch_departments.filters.department'))
                     ->relationship('department', 'name_ar'),
                 TernaryFilter::make('is_active')
-                    ->label(__('core::core.filters.status')),
+                    ->label(__('core::filters.status')),
             ])
             ->recordActions([
                 EditAction::make()
