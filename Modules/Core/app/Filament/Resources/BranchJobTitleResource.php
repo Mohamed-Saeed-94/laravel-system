@@ -3,6 +3,7 @@
 namespace Modules\Core\Filament\Resources;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -60,44 +61,40 @@ class BranchJobTitleResource extends Resource
 
     public static function canViewAny(): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branch_job_titles.view_any') ?? false;
+        return static::authUser()?->can('branch_job_titles.view_any') ?? false;
     }
 
     public static function canView(Model $record): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branch_job_titles.view') ?? false;
+        return static::authUser()?->can('branch_job_titles.view') ?? false;
     }
 
     public static function canCreate(): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branch_job_titles.create') ?? false;
+        return static::authUser()?->can('branch_job_titles.create') ?? false;
     }
 
     public static function canEdit(Model $record): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branch_job_titles.update') ?? false;
+        return static::authUser()?->can('branch_job_titles.update') ?? false;
     }
 
     public static function canDelete(Model $record): bool
     {
-        $user = auth()->user();
-
-        return $user?->can('branch_job_titles.delete') ?? false;
+        return static::authUser()?->can('branch_job_titles.delete') ?? false;
     }
 
     public static function canDeleteAny(): bool
     {
-        $user = auth()->user();
+        return static::authUser()?->can('branch_job_titles.delete_any') ?? false;
+    }
 
-        return $user?->can('branch_job_titles.delete_any') ?? false;
+    /**
+     * Use Filament auth to respect the active panel guard.
+     */
+    protected static function authUser(): ?Model
+    {
+        return filament()->auth()->user();
     }
 
     public static function form(Schema $schema): Schema
@@ -111,7 +108,7 @@ class BranchJobTitleResource extends Resource
                 ->label(__('core::branch_job_titles.fields.job_title'))
                 ->relationship('jobTitle', 'name_ar')
                 ->required()
-                ->rule(fn (Get $get, ?Model $record) => Rule::unique('branch_job_titles')
+                ->rule(fn ( $get, ?Model $record) => Rule::unique('branch_job_titles')
                     ->where('branch_id', $get('branch_id'))
                     ->where('job_title_id', $get('job_title_id'))
                     ->ignore($record)),
@@ -156,12 +153,16 @@ class BranchJobTitleResource extends Resource
                     ->label(__('core::core.filters.status')),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (Model $record): bool => static::canEdit($record)),
             ])
             ->toolbarActions([
+                CreateAction::make()
+                    ->visible(fn (): bool => static::canCreate()),
+
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                ]),
+                ])->visible(fn (): bool => static::canDeleteAny()),
             ]);
     }
 
