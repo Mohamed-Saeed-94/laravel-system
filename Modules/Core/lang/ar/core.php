@@ -26,6 +26,6 @@ return [
         'delete' => 'حذف',
         'switch_language' => 'تغيير اللغة',
         'switch_to_ar' => 'العربية',
-        'switch_to_en' => 'English',
+        'switch_to_en' => 'الإنجليزية',
     ],
 ];
