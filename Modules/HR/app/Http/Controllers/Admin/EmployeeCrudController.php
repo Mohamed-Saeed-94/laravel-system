@@ -7,8 +7,8 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Modules\Core\Models\Branch;
 use Modules\Core\Models\Department;
 use Modules\Core\Models\JobTitle;
-use Modules\HR\Http\Requests\Admin\Employee\StoreRequest;
-use Modules\HR\Http\Requests\Admin\Employee\UpdateRequest;
+use Modules\HR\Http\Requests\Admin\Employee\StoreEmployeeRequest;
+use Modules\HR\Http\Requests\Admin\Employee\UpdateEmployeeRequest;
 use Modules\HR\Models\Employee;
 
 class EmployeeCrudController extends CrudController
@@ -131,7 +131,7 @@ class EmployeeCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreEmployeeRequest::class);
 
         CRUD::addFields([
             [
@@ -249,7 +249,7 @@ class EmployeeCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateEmployeeRequest::class);
         $this->setupCreateOperation();
     }
 }

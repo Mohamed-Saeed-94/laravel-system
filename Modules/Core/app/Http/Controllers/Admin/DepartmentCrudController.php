@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\Admin\Department\StoreRequest;
-use Modules\Core\Http\Requests\Admin\Department\UpdateRequest;
+use Modules\Core\Http\Requests\Admin\Department\StoreDepartmentRequest;
+use Modules\Core\Http\Requests\Admin\Department\UpdateDepartmentRequest;
 use Modules\Core\Models\Department;
 
 class DepartmentCrudController extends CrudController
@@ -84,7 +84,7 @@ class DepartmentCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreDepartmentRequest::class);
 
         CRUD::addFields([
             [
@@ -108,7 +108,7 @@ class DepartmentCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateDepartmentRequest::class);
         $this->setupCreateOperation();
     }
 }

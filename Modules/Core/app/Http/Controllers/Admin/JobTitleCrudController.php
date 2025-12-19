@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\Admin\JobTitle\StoreRequest;
-use Modules\Core\Http\Requests\Admin\JobTitle\UpdateRequest;
+use Modules\Core\Http\Requests\Admin\JobTitle\StoreJobTitleRequest;
+use Modules\Core\Http\Requests\Admin\JobTitle\UpdateJobTitleRequest;
 use Modules\Core\Models\Department;
 use Modules\Core\Models\JobTitle;
 
@@ -91,7 +91,7 @@ class JobTitleCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreJobTitleRequest::class);
 
         CRUD::addFields([
             [
@@ -123,7 +123,7 @@ class JobTitleCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateJobTitleRequest::class);
         $this->setupCreateOperation();
     }
 }

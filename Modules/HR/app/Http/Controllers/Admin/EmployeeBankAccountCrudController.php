@@ -4,8 +4,8 @@ namespace Modules\HR\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\HR\Http\Requests\Admin\EmployeeBankAccount\StoreRequest;
-use Modules\HR\Http\Requests\Admin\EmployeeBankAccount\UpdateRequest;
+use Modules\HR\Http\Requests\Admin\EmployeeBankAccount\StoreEmployeeBankAccountRequest;
+use Modules\HR\Http\Requests\Admin\EmployeeBankAccount\UpdateEmployeeBankAccountRequest;
 use Modules\HR\Models\EmployeeBankAccount;
 
 class EmployeeBankAccountCrudController extends CrudController
@@ -79,7 +79,7 @@ class EmployeeBankAccountCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreEmployeeBankAccountRequest::class);
 
         CRUD::addFields([
             [
@@ -132,7 +132,7 @@ class EmployeeBankAccountCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateEmployeeBankAccountRequest::class);
         $this->setupCreateOperation();
     }
 }

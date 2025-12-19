@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\Core\Http\Requests\Admin\Branch\StoreRequest;
-use Modules\Core\Http\Requests\Admin\Branch\UpdateRequest;
+use Modules\Core\Http\Requests\Admin\Branch\StoreBranchRequest;
+use Modules\Core\Http\Requests\Admin\Branch\UpdateBranchRequest;
 use Modules\Core\Models\Branch;
 use Modules\Core\Models\City;
 
@@ -91,7 +91,7 @@ class BranchCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreBranchRequest::class);
 
         CRUD::addFields([
             [
@@ -129,7 +129,7 @@ class BranchCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateBranchRequest::class);
         $this->setupCreateOperation();
     }
 }

@@ -4,8 +4,8 @@ namespace Modules\HR\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\HR\Http\Requests\Admin\EmployeePhone\StoreRequest;
-use Modules\HR\Http\Requests\Admin\EmployeePhone\UpdateRequest;
+use Modules\HR\Http\Requests\Admin\EmployeePhone\StoreEmployeePhoneRequest;
+use Modules\HR\Http\Requests\Admin\EmployeePhone\UpdateEmployeePhoneRequest;
 use Modules\HR\Models\EmployeePhone;
 
 class EmployeePhoneCrudController extends CrudController
@@ -74,7 +74,7 @@ class EmployeePhoneCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreEmployeePhoneRequest::class);
 
         CRUD::addFields([
             [
@@ -112,7 +112,7 @@ class EmployeePhoneCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateEmployeePhoneRequest::class);
         $this->setupCreateOperation();
     }
 }

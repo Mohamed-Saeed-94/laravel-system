@@ -4,8 +4,8 @@ namespace Modules\HR\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\HR\Http\Requests\Admin\EmployeeLicense\StoreRequest;
-use Modules\HR\Http\Requests\Admin\EmployeeLicense\UpdateRequest;
+use Modules\HR\Http\Requests\Admin\EmployeeLicense\StoreEmployeeLicenseRequest;
+use Modules\HR\Http\Requests\Admin\EmployeeLicense\UpdateEmployeeLicenseRequest;
 use Modules\HR\Models\EmployeeLicense;
 
 class EmployeeLicenseCrudController extends CrudController
@@ -74,7 +74,7 @@ class EmployeeLicenseCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreEmployeeLicenseRequest::class);
 
         CRUD::addFields([
             [
@@ -122,7 +122,7 @@ class EmployeeLicenseCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateEmployeeLicenseRequest::class);
         $this->setupCreateOperation();
     }
 }

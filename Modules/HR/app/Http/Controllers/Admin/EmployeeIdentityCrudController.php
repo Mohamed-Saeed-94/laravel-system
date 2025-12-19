@@ -4,8 +4,8 @@ namespace Modules\HR\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Modules\HR\Http\Requests\Admin\EmployeeIdentity\StoreRequest;
-use Modules\HR\Http\Requests\Admin\EmployeeIdentity\UpdateRequest;
+use Modules\HR\Http\Requests\Admin\EmployeeIdentity\StoreEmployeeIdentityRequest;
+use Modules\HR\Http\Requests\Admin\EmployeeIdentity\UpdateEmployeeIdentityRequest;
 use Modules\HR\Models\EmployeeIdentity;
 
 class EmployeeIdentityCrudController extends CrudController
@@ -74,7 +74,7 @@ class EmployeeIdentityCrudController extends CrudController
 
     protected function setupCreateOperation(): void
     {
-        CRUD::setValidation(StoreRequest::class);
+        CRUD::setValidation(StoreEmployeeIdentityRequest::class);
 
         CRUD::addFields([
             [
@@ -131,7 +131,7 @@ class EmployeeIdentityCrudController extends CrudController
 
     protected function setupUpdateOperation(): void
     {
-        CRUD::setValidation(UpdateRequest::class);
+        CRUD::setValidation(UpdateEmployeeIdentityRequest::class);
         $this->setupCreateOperation();
     }
 }
