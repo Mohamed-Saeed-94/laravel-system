@@ -2,6 +2,7 @@
 
 namespace Modules\HR\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,7 @@ use Modules\HR\Rules\JobTitleMatchesDepartment;
 
 class Employee extends Model
 {
+    use CrudTrait;
     use HasFactory;
     use SoftDeletes;
 
